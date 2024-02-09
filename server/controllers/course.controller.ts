@@ -239,6 +239,7 @@ export const addAnswer = catchAsyncErrors(
         const data = {
           name: question.user.name,
           title: courseContent.title,
+          answer,
         };
         const html = await ejs.renderFile(
           path.join(__dirname, "../mails/question-reply.ejs"),
@@ -249,7 +250,7 @@ export const addAnswer = catchAsyncErrors(
           await sendMail({
             email: question.user.email,
             subject: "Question Reply",
-            template: "question-reply.ejs",
+            template: "question-reply",
             data,
           });
         } catch (error: any) {
