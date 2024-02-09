@@ -7,6 +7,9 @@ import { createCourse } from "../services/course.service";
 import CourseModel from "../models/course.model";
 import { redis } from "../utils/redis";
 import mongoose from "mongoose";
+import ejs from "ejs";
+import path from "path";
+import sendMail from "../utils/sendMail";
 
 // upload course
 export const uploadCourse = catchAsyncErrors(
@@ -163,15 +166,17 @@ export const addQuestion = catchAsyncErrors(
       const data: IAddQuestionData = req.body;
       const { question, courseId, contentId } = data;
       const course = await CourseModel.findById(courseId);
-      if(!mongoose.Types.ObjectId.isValid(contentId)){
+      if (!mongoose.Types.ObjectId.isValid(contentId)) {
         return next(new ErrorHandler(400, "Invalid content id"));
       }
-      const courseContent = course?.courseData?.find((item: any) => item._id.equals(contentId));
+      const courseContent = course?.courseData?.find((item: any) =>
+        item._id.equals(contentId)
+      );
       if (!courseContent) {
         return next(new ErrorHandler(400, "Content not found"));
       }
       // create a new question
-      const newQuestion:any = {
+      const newQuestion: any = {
         user: req.user,
         question,
         questionReplies: [],
@@ -183,6 +188,77 @@ export const addQuestion = catchAsyncErrors(
       res.status(200).json({
         success: true,
         message: "Question added successfully",
+        course,
+      });
+    } catch (error: any) {
+      return next(new ErrorHandler(500, error.message));
+    }
+  }
+);
+
+// add reply to question
+interface IAddAnswerData {
+  questionId: string;
+  contentId: string;
+  answer: string;
+  courseId: string;
+}
+export const addAnswer = catchAsyncErrors(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const data: IAddAnswerData = req.body;
+      const { questionId, contentId, answer, courseId } = data;
+      const course = await CourseModel.findById(courseId);
+      if (!mongoose.Types.ObjectId.isValid(contentId)) {
+        return next(new ErrorHandler(400, "Invalid content id"));
+      }
+      const courseContent = course?.courseData?.find((item: any) =>
+        item._id.equals(contentId)
+      );
+      if (!courseContent) {
+        return next(new ErrorHandler(400, "Content not found"));
+      }
+      const question = courseContent?.questions?.find((item: any) =>
+        item._id.equals(questionId)
+      );
+      if (!question) {
+        return next(new ErrorHandler(400, "Question not found"));
+      }
+      // create a new answer
+      const newAnswer: any = {
+        user: req.user,
+        answer,
+      };
+      // add answer to question
+      question?.questionReplies?.push(newAnswer);
+      // save course
+      await course?.save();
+      if (req.user?._id === question.user._id) {
+        // create a notification
+      } else {
+        const data = {
+          name: question.user.name,
+          title: courseContent.title,
+        };
+        const html = await ejs.renderFile(
+          path.join(__dirname, "../mails/question-reply.ejs"),
+          data
+        );
+        // send mail
+        try {
+          await sendMail({
+            email: question.user.email,
+            subject: "Question Reply",
+            template: "question-reply.ejs",
+            data,
+          });
+        } catch (error: any) {
+          return next(new ErrorHandler(500, error.message));
+        }
+      }
+      res.status(200).json({
+        success: true,
+        message: "Answer added successfully",
         course,
       });
     } catch (error: any) {
