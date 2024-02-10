@@ -22,10 +22,7 @@ const notificationSchema = new Schema<INotification>({
         required: true,
         default: 'unread'
     },
-    userId: {
-        type: String,
-        required: true
-    }
+    
 },{timestamps: true}); // timestamps: true adds createdAt and updatedAt fields
 
 const NotificationModel: Model<INotification> = mongoose.model('Notification', notificationSchema);
