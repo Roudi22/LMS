@@ -11,6 +11,7 @@ import ejs from "ejs";
 import path from "path";
 import sendMail from "../utils/sendMail";
 import NotificationModel from "../models/notification.model";
+import { getAllCoursesService } from "../services/course.service";
 
 // upload course
 export const uploadCourse = catchAsyncErrors(
@@ -371,6 +372,17 @@ export const addReplyToReview = catchAsyncErrors(
         message: "Reply added successfully",
         course,
       });
+    } catch (error: any) {
+      return next(new ErrorHandler(500, error.message));
+    }
+  }
+);
+
+// get all courses -- only for admin
+export const getAllCoursesAdmin = catchAsyncErrors(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      getAllCoursesService(res);
     } catch (error: any) {
       return next(new ErrorHandler(500, error.message));
     }
