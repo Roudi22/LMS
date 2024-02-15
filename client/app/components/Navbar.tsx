@@ -5,12 +5,15 @@ import React, { useState } from "react";
 import logolight from "../assets/logoLight.png";
 import logodark from "../assets/white2.png";
 import NavItems from "../utils/NavItems";
+import ThemeSwitcher from "../utils/ThemeSwitcher";
+import { useTheme } from "next-themes";
+import { HiOutlineMenu, HiUserCircle } from "react-icons/hi";
 const Navbar = () => {
   const [open, setOpen] = useState(false);
   const [activeItem, setActiveItem] = useState(0);
-  const [active, setActive] = useState(false)
-  const [openSidebar, setOpenSidebar] = useState(false)
-
+  const [active, setActive] = useState(false);
+  const [openSidebar, setOpenSidebar] = useState(false);
+  const { theme, setTheme } = useTheme();
   if (typeof window !== "undefined") {
     window.onscroll = () => {
       if (window.scrollY > 80) {
@@ -20,35 +23,83 @@ const Navbar = () => {
       }
     };
   }
+
+  const handleClose = (e:any) => {
+    if (e.target.id === "screen") {
+      setOpenSidebar(false);
+    }
+    setOpenSidebar(false);
+  };
   return (
     <>
       <div className="w-full relative ">
         <div
           className={`${
             active
-              ? "dark:bg-opacity-50 dark:bg-gradient-to-b dark:from-gray-900 dark:to-black fixed top-0 left-0 w-full h-[80px] z-[80] border-b dark:border-[#ffffff1c] shadow-xl transition duration-500"
-              : "w-full border-b dark:border-[#ffffff1c] h-[80px] z-[80] dark:shadow"
+              ? "dark:bg-opacity-50 dark:bg-gradient-to-b dark:from-gray-900 dark:to-black fixed top-0 left-0 w-full z-[80] border-b dark:border-[#ffffff1c] shadow-xl transition duration-500"
+              : "w-full border-b dark:border-[#ffffff1c] z-[80] dark:shadow"
           }`}
         >
           <div className="w-[95%] 800px:w-[92%] m-auto py-2 h-full">
             <div className="w-full h-[80px] flex items-center justify-between p-3">
-                <div>
-                  <Link
+              <div>
+                <Link
                   href={`/`}
                   className={`flex items-center cursor-pointer gap-3 text-[25px] font-Poppins font-[500] text-black dark:text-white `}
-                  >
-                  <Image src={active ? logolight : logodark} alt="logo" width={80}/>
+                >
+                  <Image
+                    src={active || theme === "light" ? logolight : logodark}
+                    alt="logo"
+                    width={80}
+                  />
                   Endless Dev
-                  </Link>
-                </div>
+                </Link>
+              </div>
 
-                <div className="flex items-center">
-                  <NavItems activeItem={activeItem} isMobile={false}/>
-                </div>
+              <div className="flex items-center">
+                <NavItems activeItem={activeItem} isMobile={false} />
 
-                {/* theme switcher here */}
+              {/* theme switcher here */}
+              <ThemeSwitcher />
+              {/* only for mobile */}
+              <div className="flex items-center 800px:hidden">
+                <HiOutlineMenu
+                  size={25}
+                  className="cursor-pointer text-black dark:text-white"
+                  onClick={() => setOpenSidebar(true)}
+                />
+              </div>
+              <HiUserCircle
+                size={25}
+                className="cursor-pointer 800px:block hidden text-black dark:text-white"/>
+              </div>
             </div>
           </div>
+
+          {/* Mobile sidebar */}
+          {
+            openSidebar && (
+              <div className="800px:hidden fixed w-full h-screen top-0 left-0 z-[9999] dark:bg-[unset] bg-[#00000024]" onClick={handleClose} id="screen">
+                <div className="w-[70%] fixed z-[99999] h-screen bg-white dark:bg-slate-900 dark:bg-opacity-90 top-0 right-0">
+                <Link
+                  href={`/`}
+                  className={`flex mt-4 items-center justify-center cursor-pointer gap-3 text-[25px] font-Poppins font-[500] text-black dark:text-white `}
+                >
+                  <Image
+                    src={active || theme === "light" ? logolight : logodark}
+                    alt="logo"
+                    width={80}
+                  />
+                  Endless Dev
+                </Link>
+                  <NavItems activeItem={activeItem} isMobile={true} />
+                  <HiUserCircle
+                size={25}
+                className="cursor-pointer ml-5 my-2 text-black dark:text-white"/>
+                </div>
+              </div>
+            )
+          }
         </div>
       </div>
     </>
