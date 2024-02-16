@@ -8,7 +8,8 @@ import NavItems from "../utils/NavItems";
 import ThemeSwitcher from "../utils/ThemeSwitcher";
 import { useTheme } from "next-themes";
 import { HiOutlineMenu, HiUserCircle } from "react-icons/hi";
-
+import CustomModel from "../utils/CustomModel";
+import login from "./Auth/Login";
 
 interface Props {
   route: string;
@@ -78,7 +79,7 @@ const Navbar = ({route,setRoute}:Props) => {
               </div>
               <HiUserCircle
                 size={25}
-                className="cursor-pointer 800px:block hidden text-black dark:text-white"/>
+                className="cursor-pointer 800px:block hidden text-black dark:text-white" onClick={()=> setOpen(true)}/>
               </div>
             </div>
           </div>
@@ -102,13 +103,30 @@ const Navbar = ({route,setRoute}:Props) => {
                   <NavItems activeItem={activeItem} isMobile={true} />
                   <HiUserCircle
                 size={25}
-                className="cursor-pointer ml-5 my-2 text-black dark:text-white"/>
+                className="cursor-pointer ml-5 my-2 text-black dark:text-white" onClick={()=> setOpen(true)}/>
                 </div>
               </div>
             )
           }
         </div>
       </div>
+      {
+        route === "Login" && (
+          <>
+            {
+              open && (
+                <CustomModel
+                open={open}
+                setOpen={setOpen}
+                setRoute={setRoute}
+                activeItem={activeItem}
+                component={login}
+                />
+              )
+            }
+          </>
+        )
+      }
     </>
   );
 };
