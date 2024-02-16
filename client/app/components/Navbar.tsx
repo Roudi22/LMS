@@ -8,20 +8,27 @@ import NavItems from "../utils/NavItems";
 import ThemeSwitcher from "../utils/ThemeSwitcher";
 import { useTheme } from "next-themes";
 import { HiOutlineMenu, HiUserCircle } from "react-icons/hi";
-const Navbar = () => {
+
+
+interface Props {
+  route: string;
+  setRoute: (route: string) => void;
+}
+
+const Navbar = ({route,setRoute}:Props) => {
   const [open, setOpen] = useState(false);
   const [activeItem, setActiveItem] = useState(0);
   const [active, setActive] = useState(false);
   const [openSidebar, setOpenSidebar] = useState(false);
   const { theme, setTheme } = useTheme();
   if (typeof window !== "undefined") {
-    window.onscroll = () => {
-      if (window.scrollY > 80) {
+    window.addEventListener("scroll", () => {
+      if (window.scrollY > 100) {
         setActive(true);
       } else {
         setActive(false);
       }
-    };
+    });
   }
 
   const handleClose = (e:any) => {
@@ -35,9 +42,9 @@ const Navbar = () => {
       <div className="w-full relative ">
         <div
           className={`${
-            active
-              ? "dark:bg-opacity-50 dark:bg-gradient-to-b dark:from-gray-900 dark:to-black fixed top-0 left-0 w-full z-[80] border-b dark:border-[#ffffff1c] shadow-xl transition duration-500"
-              : "w-full border-b dark:border-[#ffffff1c] z-[80] dark:shadow"
+            
+              "dark:bg-opacity-50 dark:bg-gradient-to-b dark:from-gray-900 dark:to-black fixed top-0 left-0 w-full z-[80] border-b dark:border-[#ffffff1c] shadow-xl transition duration-500"
+              
           }`}
         >
           <div className="w-[95%] 800px:w-[92%] m-auto py-2 h-full">
@@ -48,7 +55,7 @@ const Navbar = () => {
                   className={`flex items-center cursor-pointer gap-3 text-[25px] font-Poppins font-[500] text-black dark:text-white `}
                 >
                   <Image
-                    src={active || theme === "light" ? logolight : logodark}
+                    src={theme === "light" ? logolight : logodark}
                     alt="logo"
                     width={80}
                   />
