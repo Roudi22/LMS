@@ -51,7 +51,7 @@ const Login = (props: Props) => {
           id="email"
           placeholder="example@example.com"
           className={`${
-            errors.email && touched.email && "border-red-500"
+            errors.email && touched.email && "border-red-500 border"
           } input`}
         />
         {errors.email && touched.email && (
@@ -70,7 +70,7 @@ const Login = (props: Props) => {
             id="password"
             placeholder="Your password"
             className={`${
-              errors.password && touched.password && "border-red-500"
+              errors.password && touched.password && "border-red-500 border"
             } input`}
           />
           {showPassword ? (
@@ -86,10 +86,10 @@ const Login = (props: Props) => {
               onClick={() => setShowPassword(!showPassword)}
             />
           )}
+        </div>
           {errors.password && touched.password && (
             <span className="text-red-500 pt-2 block">{errors.password}</span>
           )}
-        </div>
         <div className="w-full mt-5">
           <input type="submit" value="Login" className="button" />
         </div>
