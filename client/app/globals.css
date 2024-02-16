@@ -32,7 +32,13 @@ body {
   text-fill-color: transparent;
 }
 
+ input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;}
+input[type=number] {
+  -moz-appearance: textfield;
 
+}
 @keyframes changeBackgroundColor {
   0%, 100% {
     opacity: 1;
@@ -70,4 +76,29 @@ body {
 }
 .button {
  @apply flex flex-row justify-center items-center py-3 px-6 rounded-full cursor-pointer bg-[#2190ff] min-h-[45px] w-full text-[16px] font-Poppins font-semibold
+}
+
+@keyframes shake {
+  0% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-2px);
+  }
+  40% {
+    transform: translateX(2px);
+  }
+  60% {
+    transform: translateX(-2px);
+  }
+  80% {
+    transform: translateX(2px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.shake {
+  animation: shake 0.5s ease-in-out;
 }
