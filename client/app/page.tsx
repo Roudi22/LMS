@@ -1,15 +1,19 @@
-'use client';
-import React, {FC, useState} from 'react';
+"use client"
+import React, {useState} from 'react'
+import Hero from './components/Hero'
+import Navbar from './components/Navbar'
 
-interface PageProps {
+type Props = {}
 
-} // 1. Define the props
+const Page = (props: Props) => {
+  const [route, setRoute] = useState("Login")
+  return (
+    <div>
+      <Navbar route={route} setRoute={setRoute}/>
+      <Hero/>
+    </div>
+  )
+}
 
-const Page: FC<PageProps> = (props) => { // 2. Define the component
-  const [state, setState] = useState(); // 3. Define the state
-
-  return <div>Page</div>; // 4. Render the component
-};
-
-export default Page; // 5. Export the component
+export default Page;
 
