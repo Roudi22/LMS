@@ -4,7 +4,7 @@ import { IUser } from "../models/user.model";
 import {redis} from "./redis";
 
 interface ITokenOptions {
-  expire: Date;
+  expires: Date;
   maxAge: number;
   httpOnly: boolean;
   sameSite: "lax" | "strict" | "none" | undefined;
@@ -22,14 +22,14 @@ export const refreshTokenExpire = parseInt(
 
 // options for cookies
 export const accessTokenOptions: ITokenOptions = {
-  expire: new Date(Date.now() + accessTokenExpire * 60 * 60 * 1000),
+  expires: new Date(Date.now() + accessTokenExpire * 60 * 60 * 1000),
   maxAge: accessTokenExpire * 60 * 60 * 1000,
   httpOnly: true,
   sameSite: "lax",
   secure: process.env.NODE_ENV === "production" ? true : false,
 };
 export const refreshTokenOptions: ITokenOptions = {
-  expire: new Date(Date.now() + refreshTokenExpire * 24 * 60 * 60 * 1000),
+  expires: new Date(Date.now() + refreshTokenExpire * 24 * 60 * 60 * 1000),
   maxAge: refreshTokenExpire * 24 * 60 * 60 * 1000,
   httpOnly: true,
   sameSite: "lax",
