@@ -9,19 +9,23 @@ import ThemeSwitcher from "../utils/ThemeSwitcher";
 import { useTheme } from "next-themes";
 import { HiOutlineMenu, HiUserCircle } from "react-icons/hi";
 import CustomModel from "../utils/CustomModel";
-import login from "./Auth/Login";
+
 import SignUp from "./Auth/SignUp";
 import Verification from "./Auth/Verification";
+import { useSelector } from "react-redux";
+import Login from "./Auth/Login";
 interface Props {
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  activeItem: number;
   route: string;
   setRoute: (route: string) => void;
 }
 
-const Navbar = ({ route, setRoute }: Props) => {
-  const [open, setOpen] = useState(false);
-  const [activeItem, setActiveItem] = useState(0);
+const Navbar = ({ route, setRoute, open, setOpen, activeItem }: Props) => {
   const [active, setActive] = useState(false);
   const [openSidebar, setOpenSidebar] = useState(false);
+  const {user} = useSelector((state: any) => state.auth)
   const { theme, setTheme } = useTheme();
   if (typeof window !== "undefined") {
     window.addEventListener("scroll", () => {
@@ -35,15 +39,20 @@ const Navbar = ({ route, setRoute }: Props) => {
 
   const handleClose = (e: any) => {
     if (e.target.id === "screen") {
-      setOpenSidebar(false);
+      {setOpenSidebar(false);}
     }
-    setOpenSidebar(false);
   };
+
+  console.log(user)
   return (
     <>
       <div className="w-full relative ">
         <div
-          className={`${"dark:bg-opacity-50 dark:bg-gradient-to-b dark:from-gray-900 dark:to-black fixed top-0 left-0 w-full z-[80] border-b dark:border-[#ffffff1c] shadow-xl transition duration-500"}`}
+          className={`${
+            active
+              ? "dark:bg-opacity-50 bg-white dark:bg-gradient-to-b dark:from-gray-900 dark:to-black fixed top-0 left-0 w-full h-[80px] z-[80] border-b dark:border-[#ffffff1c] shadow-xl transition duration-500"
+              : "w-full border-b dark:border-[#ffffff1c] h-[80px] z-[80] dark:shadow"
+          }`}
         >
           <div className="w-[95%] 800px:w-[92%] m-auto py-2 h-full">
             <div className="w-full h-[80px] flex items-center justify-between p-3">
@@ -121,7 +130,7 @@ const Navbar = ({ route, setRoute }: Props) => {
               setOpen={setOpen}
               setRoute={setRoute}
               activeItem={activeItem}
-              component={login}
+              component={Login}
             />
           )}
         </>
