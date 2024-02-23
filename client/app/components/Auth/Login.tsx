@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import {
@@ -8,8 +8,11 @@ import {
   AiFillGithub,
 } from "react-icons/ai";
 import { FcGoogle } from "react-icons/fc";
+import { useLoginMutation } from "@/redux/features/auth/authApi";
+import toast from "react-hot-toast";
 type Props = {
   setRoute: (route: string) => void;
+  setOpen: (open: boolean) => void;
 };
 
 const schema = Yup.object().shape({
@@ -23,6 +26,7 @@ const schema = Yup.object().shape({
 
 const Login = (props: Props) => {
   const [showPassword, setShowPassword] = useState(false);
+  const [login, {isSuccess,error}] = useLoginMutation(); // using the useLoginMutation hook to login the user from authApi
   const formik = useFormik({
     // formik hook to handle form state and validation
     initialValues: {
@@ -31,9 +35,22 @@ const Login = (props: Props) => {
     },
     validationSchema: schema,
     onSubmit: async ({ email, password }) => {
-      console.log(email, password);
+      await login({email,password});
     },
   });
+
+  useEffect(() => {
+    if(isSuccess){
+      toast.success("Login successful");
+      props.setOpen(false);
+    }
+    if(error){
+      if("data" in error){
+        const errorData = error as any
+        toast.error(errorData.data.message);
+    }
+  }}, [isSuccess,error])
+  
 
   const { errors, touched, values, handleChange, handleSubmit } = formik; // destructuring formik props to use in the form
   return (
