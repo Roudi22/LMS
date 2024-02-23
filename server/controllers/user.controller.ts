@@ -26,6 +26,7 @@ interface IRegistrationBody {
   password: string;
   avatar?: string;
 }
+
 export const registrationUser = catchAsyncErrors(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -60,7 +61,7 @@ export const registrationUser = catchAsyncErrors(
           activationToken: activationToken.token,
         });
       } catch (error: any) {
-        return next(new ErrorHandler(500, error.message));
+        return next(new ErrorHandler(500, error.message)); // server error while sending email to user
       }
     } catch (error: any) {
       return next(new ErrorHandler(400, error.message));
@@ -144,7 +145,7 @@ export const loginUser = catchAsyncErrors(
       if (!isPasswordMatch) {
         return next(new ErrorHandler(400, "Invalid email or password"));
       }
-      console.log("dhhdh", user);
+      console.log("user logged in", user);
       sendToken(res, user, 200);
     } catch (error: any) {
       return next(new ErrorHandler(400, error.message));
@@ -160,6 +161,7 @@ export const logoutUser = catchAsyncErrors(
       res.cookie("refresh_token", "", { maxAge: 1 });
       const userId = req.user?._id || "";
       redis.del(userId);
+      console.log(req.user, "logged out")
       res.status(200).json({
         success: true,
         message: "Logged out successfully",
@@ -191,13 +193,13 @@ export const updateAccessToken = catchAsyncErrors(
       const accessToken = jwt.sign(
         { id: user._id },
         process.env.ACCESS_TOKEN as string,
-        { expiresIn: process.env.ACCESS_TOKEN_EXPIRES_TIME }
+        { expiresIn: "5m" }
       );
 
       const refreshToken = jwt.sign(
         { id: user._id },
         process.env.REFRESH_TOKEN as string,
-        { expiresIn: process.env.REFRESH_TOKEN_EXPIRES_TIME }
+        { expiresIn: "3d" }
       );
 
       req.user = user;
@@ -205,7 +207,7 @@ export const updateAccessToken = catchAsyncErrors(
       res.cookie("refresh_token", refreshToken, refreshTokenOptions);
 
       await redis.set(user._id, JSON.stringify(user), "EX", 604800); // update user session in redis for 7 days
-
+        
       res.status(200).json({
         success: true,
         accessToken,
