@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import logolight from "../assets/logoLight.png";
 import logodark from "../assets/white2.png";
 import NavItems from "../utils/NavItems";
@@ -9,11 +9,14 @@ import ThemeSwitcher from "../utils/ThemeSwitcher";
 import { useTheme } from "next-themes";
 import { HiOutlineMenu, HiUserCircle } from "react-icons/hi";
 import CustomModel from "../utils/CustomModel";
-
+import avatar from "../assets/avatar-removebg-preview.png";
 import SignUp from "./Auth/SignUp";
 import Verification from "./Auth/Verification";
 import { useSelector } from "react-redux";
 import Login from "./Auth/Login";
+import { useSession } from "next-auth/react";
+import { useSocialAuthMutation } from "@/redux/features/auth/authApi";
+import toast from "react-hot-toast";
 interface Props {
   open: boolean;
   setOpen: (open: boolean) => void;
@@ -26,7 +29,24 @@ const Navbar = ({ route, setRoute, open, setOpen, activeItem }: Props) => {
   const [active, setActive] = useState(false);
   const [openSidebar, setOpenSidebar] = useState(false);
   const {user} = useSelector((state: any) => state.auth)
+  const {data} = useSession();
+  const [socialAuth, {isSuccess,error}] = useSocialAuthMutation(); // using the useSocialAuthMutation hook to login the user from authApi
   const { theme, setTheme } = useTheme();
+  
+  useEffect(() => {
+    if(!user) {
+      if(data) {
+        socialAuth({email: data?.user?.email, name: data?.user?.name, avatar: data?.user?.image})
+      }
+    }
+    if(isSuccess){
+      toast.success("Login successful");
+    }
+  }, [data,user])
+  
+  
+  
+  console.log(data)
   if (typeof window !== "undefined") {
     window.addEventListener("scroll", () => {
       if (window.scrollY > 100) {
@@ -43,7 +63,7 @@ const Navbar = ({ route, setRoute, open, setOpen, activeItem }: Props) => {
     }
   };
 
-  console.log(user)
+  
   return (
     <>
       <div className="w-full relative ">
@@ -83,11 +103,29 @@ const Navbar = ({ route, setRoute, open, setOpen, activeItem }: Props) => {
                     onClick={() => setOpenSidebar(true)}
                   />
                 </div>
-                <HiUserCircle
+                {
+                  user ? (
+                    <Link
+                    href={`/profile`}
+                    >
+                      <Image
+                      src={user?.avatar ? user.avatar : avatar}
+                      alt="user"
+                      width={40}
+                      height={40}
+                      />
+                    </Link>
+                    ) : (
+                      
+                      
+                  <HiUserCircle
                   size={25}
                   className="cursor-pointer 800px:block hidden text-black dark:text-white"
                   onClick={() => setOpen(true)}
                 />
+                      
+                  )
+                }
               </div>
             </div>
           </div>
