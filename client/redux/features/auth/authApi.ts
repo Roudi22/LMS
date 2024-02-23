@@ -66,8 +66,35 @@ export const authApi = apiSlice.injectEndpoints({
                 console.log("error from login mutation",error);
               }
             }
+          }),
+          socialAuth: builder.mutation({
+            query: ({ email, name, avatar }) => ({
+              url: "socialAuth",
+              method: "POST",
+              body: {
+                email,
+                name,
+                avatar,
+              },
+              credentials : "include" as const
+            }),
+            async onQueryStarted(arg, { queryFulfilled, dispatch }) {
+              try {
+                
+                const result = await queryFulfilled;
+                dispatch(
+                  userLoggedIn({
+                    accessToken: result.data.accessToken,
+                    user: result.data.user
+                  }) // dispatching the userLoggedIn action to update the state with the user's access token and user details
+                );
+                console.log("success from login mutation",result);
+              } catch (error: any) {
+                console.log("error from login mutation",error);
+              }
+            }
           })
     })
 });
 
-export const { useRegisterMutation, useActivationMutation, useLoginMutation} = authApi;
+export const { useRegisterMutation, useActivationMutation, useLoginMutation, useSocialAuthMutation} = authApi;
