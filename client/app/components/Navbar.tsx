@@ -44,9 +44,6 @@ const Navbar = ({ route, setRoute, open, setOpen, activeItem }: Props) => {
     }
   }, [data,user])
   
-  
-  
-  console.log(data)
   if (typeof window !== "undefined") {
     window.addEventListener("scroll", () => {
       if (window.scrollY > 100) {
