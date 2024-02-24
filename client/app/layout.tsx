@@ -1,5 +1,5 @@
 "use client"
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import { Poppins, Josefin_Sans } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "./utils/theme-provider";
@@ -40,8 +40,19 @@ export default function RootLayout({
   );
 }
 
-const Custom: FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { isLoading } = useLoadUserQuery({});
+// const Custom: FC<{ children: React.ReactNode }> = ({ children }) => {
+//   const { isLoading } = useLoadUserQuery({});
 
-  return <div>{isLoading ? <Loader /> : <div>{children} </div>}</div>;
-};
+//   return <div>{isLoading ? <Loader /> : <div>{children} </div>}</div>;
+// };
+const Custom: FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [isLoading, setIsLoading] = useState(true);
+  const { data, error } = useLoadUserQuery({});
+
+  useEffect(() => {
+    if (data || error) {
+      setIsLoading(false);
+    }
+  }, [data, error]);
+
+  return <div>{isLoading ? <Loader /> : <div>{children} </div>}</div>; }
