@@ -15,7 +15,7 @@ import Verification from "./Auth/Verification";
 import { useSelector } from "react-redux";
 import Login from "./Auth/Login";
 import { useSession } from "next-auth/react";
-import { useSocialAuthMutation } from "@/redux/features/auth/authApi";
+import { useLogOutQuery, useSocialAuthMutation } from "@/redux/features/auth/authApi";
 import toast from "react-hot-toast";
 interface Props {
   open: boolean;
@@ -32,27 +32,42 @@ const Navbar = ({ route, setRoute, open, setOpen, activeItem }: Props) => {
   const {data} = useSession();
   const [socialAuth, {isSuccess,error}] = useSocialAuthMutation(); // using the useSocialAuthMutation hook to login the user from authApi
   const { theme, setTheme } = useTheme();
-  
+  const [logout, setLogout] = useState(false)
+    const {} = useLogOutQuery(undefined, {
+      skip: !logout ? true : false, 
+    });
   useEffect(() => {
     if(!user) {
       if(data) {
         socialAuth({email: data?.user?.email, name: data?.user?.name, avatar: data?.user?.image})
       }
     }
-    if(isSuccess){
-      toast.success("Login successful");
+    if(data === null ){
+      if(isSuccess){
+        toast.success("Login successful");
+      }
+    }
+    if(data === null){
+      setLogout(true);
     }
   }, [data,user])
   
-  if (typeof window !== "undefined") {
-    window.addEventListener("scroll", () => {
-      if (window.scrollY > 100) {
-        setActive(true);
-      } else {
-        setActive(false);
-      }
-    });
-  }
+  useEffect(() => {
+    const handleScroll = () => {
+        if (window.scrollY > 100) {
+            setActive(true);
+        } else {
+            setActive(false);
+        }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    // Cleanup function to remove the event listener
+    return () => {
+        window.removeEventListener("scroll", handleScroll);
+    };
+}, []); 
 
   const handleClose = (e: any) => {
     if (e.target.id === "screen") {
