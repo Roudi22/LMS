@@ -28,11 +28,11 @@ const SideBarProfile = ({
         onClick={() => setActive(1)}
       >
         <Image
-        src={user?.avatar || avatar ? user?.avatar || avatar : profileImg}
+        src={user?.avatar || avatar ? user?.avatar.url || avatar : profileImg}
         alt="profile-image"
-        width={50}
+        width={30}
         height={40}
-        className="cursor-pointer"
+        className="cursor-pointer rounded-full"
         />
         <h5 className="pl-2 800px:block hidden font-Poppins dark:text-white text-black" >
             My Account
