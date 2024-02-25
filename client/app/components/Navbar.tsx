@@ -121,10 +121,11 @@ const Navbar = ({ route, setRoute, open, setOpen, activeItem }: Props) => {
                     href={`/profile`}
                     >
                       <Image
-                      src={user?.avatar ? user.avatar : avatar}
+                      src={user?.avatar ? user.avatar.url : avatar}
                       alt="user"
                       width={40}
                       height={40}
+                      className={`rounded-full ${activeItem === 5 ? "border-4 border-orange-400" : ""}`}
                       />
                     </Link>
                     ) : (
