@@ -5,6 +5,8 @@ import profileImg from "../../assets/avatar-removebg-preview.png";
 import { RiLockPasswordLine } from "react-icons/ri";
 import { SiCoursera } from "react-icons/si";
 import { AiOutlineLogout } from "react-icons/ai";
+import { MdOutlineAdminPanelSettings } from "react-icons/md";
+
 type Props = {
   active: number;
   avatar: string | null;
@@ -61,6 +63,21 @@ const SideBarProfile = ({
           Enrolled Courses
         </h5>
       </div>
+      {
+        user.role === "admin" && (
+          <div
+        className={`w-full flex items-center px-3 py-4 cursor-pointer ${
+          active === 6 ? "dark:bg-slate-800 bg-white" : "bg-transparent"
+        }`}
+        onClick={() => setActive(3)}
+      >
+        <MdOutlineAdminPanelSettings size={20} className="dark:text-white text-black"  />
+        <h5 className="pl-2 800px:block hidden font-Poppins dark:text-white text-black">
+          Admin Dashboard
+        </h5>
+      </div>
+        )
+      }
 
       <div
         className={`w-full flex items-center px-3 py-4 cursor-pointer ${
