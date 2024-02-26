@@ -3,8 +3,9 @@ import React, { useEffect, useState } from 'react'
 import { AiOutlineCamera } from 'react-icons/ai';
 import { useSelector } from 'react-redux';
 import profileImg from "../../assets/avatar-removebg-preview.png"
-import { useUpdateAvatarMutation } from '@/redux/features/user/userApi';
+import { useEditProfileMutation, useUpdateAvatarMutation } from '@/redux/features/user/userApi';
 import { useLoadUserQuery } from '@/redux/features/api/apiSlice';
+import toast from 'react-hot-toast';
 type Props = {
     avatar: string | null
 }
@@ -12,6 +13,7 @@ type Props = {
 function ProfileInfo({avatar}: Props) {
     const {user} = useSelector((state:any) => state.auth);
     const [name, setName] = useState(user.name);
+    const [editProfile, {isSuccess:success, error:updateError}] = useEditProfileMutation();
     const [updateAvatar, {isSuccess,error}] = useUpdateAvatarMutation();
     const [loadUser, setLoadUser] = useState(false);
     const {} = useLoadUserQuery(undefined, {
@@ -30,17 +32,22 @@ function ProfileInfo({avatar}: Props) {
     }
 
     useEffect(()=> {
-        if(isSuccess){
+        if(isSuccess || success){
             setLoadUser(true);
         }
-        if(error){
+        if(error || updateError){
             console.log(error)
         }
-    },[isSuccess,error])
+        if(success) {
+          toast.success("Profile updated successfully")
+        }
+    },[isSuccess,error,success,updateError])
 
-    const handleSubmit = (e: any) => {
+    const handleSubmit = async (e: any) => {
         e.preventDefault();
-        console.log("handleSubmit")
+        if( name !== ""){
+          await  editProfile({name})
+        }
     }
     return (
         <>
