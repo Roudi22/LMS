@@ -17,6 +17,7 @@ import Login from "./Auth/Login";
 import { useSession } from "next-auth/react";
 import { useLogOutQuery, useSocialAuthMutation } from "@/redux/features/auth/authApi";
 import toast from "react-hot-toast";
+import { useLoadUserQuery } from "@/redux/features/api/apiSlice";
 interface Props {
   open: boolean;
   setOpen: (open: boolean) => void;
@@ -28,7 +29,8 @@ interface Props {
 const Navbar = ({ route, setRoute, open, setOpen, activeItem }: Props) => {
   const [active, setActive] = useState(false);
   const [openSidebar, setOpenSidebar] = useState(false);
-  const {user} = useSelector((state: any) => state.auth)
+  // const {user} = useSelector((state: any) => state.auth)
+  const {data:userData,isLoading,refetch} = useLoadUserQuery(undefined,{});
   const {data} = useSession();
   const [socialAuth, {isSuccess,error}] = useSocialAuthMutation(); // using the useSocialAuthMutation hook to login the user from authApi
   const { theme, setTheme } = useTheme();
@@ -37,20 +39,28 @@ const Navbar = ({ route, setRoute, open, setOpen, activeItem }: Props) => {
       skip: !logout ? true : false, 
     });
   useEffect(() => {
-    if(!user) {
-      if(data) {
-        socialAuth({email: data?.user?.email, name: data?.user?.name, avatar: data?.user?.image})
+    if(!isLoading){
+      if (!userData) {
+        if (data) {
+          socialAuth({
+            email: data?.user?.email,
+            name: data?.user?.name,
+            avatar: data.user?.image,
+          });
+          refetch(); 
+        } 
+      }
+      if(data === null){
+        if(isSuccess){
+          toast.success("Login Successfully");
+        }
+      }
+      if(data === null && !isLoading && !userData){
+          setLogout(true);
       }
     }
-    if(data === null ){
-      if(isSuccess){
-        toast.success("Login successful");
-      }
-    }
-    if(data === null){
-      setLogout(true);
-    }
-  }, [data,user])
+  }, [data,userData,isLoading])
+  console.log(userData)
   
   useEffect(() => {
     const handleScroll = () => {
@@ -116,12 +126,12 @@ const Navbar = ({ route, setRoute, open, setOpen, activeItem }: Props) => {
                   />
                 </div>
                 {
-                  user ? (
+                  userData ? (
                     <Link
                     href={`/profile`}
                     >
                       <Image
-                      src={user?.avatar ? user.avatar.url : avatar}
+                      src={userData?.user.avatar ? userData.user.avatar.url : avatar}
                       alt="user"
                       width={40}
                       height={40}
