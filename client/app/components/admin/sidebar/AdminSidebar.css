@@ -1,0 +1,146 @@
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 78px;
+    background: #4A87CE;
+    padding: 6px 14px;
+    z-index: 99;
+    transition: all 0.5s ease;
+  }
+  .sidebar.open {
+    width: 250px;
+  }
+  .sidebar .logo-details {
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+  .sidebar .logo-details .icon {
+    opacity: 0;
+    transition: all 0.5s ease;
+    margin-right: 10px;
+  }
+  .sidebar .logo-details .logo_name {
+    color: #fff;
+    font-size: 20px;
+    font-weight: 600;
+    opacity: 0;
+    transition: all 0.5s ease;
+  }
+  .sidebar.open .logo-details .icon,
+  .sidebar.open .logo-details .logo_name {
+    opacity: 1;
+  }
+  .sidebar .logo-details #btn {
+    position: absolute;
+    top: 50%;
+    right: 30%;
+    transform: translateY(-50%);
+    font-size: 22px;
+    transition: all 0.4s ease;
+    font-size: 23px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.5s ease;
+  }
+  .sidebar.open .logo-details #btn {
+    text-align: right;
+    right: 0;
+    transform: rotate(180deg);
+    top: 25%;
+  }
+  .sidebar i {
+    color: #fff;
+    height: 60px;
+    min-width: 50px;
+    font-size: 28px;
+    text-align: center;
+    line-height: 60px;
+  }
+  .sidebar .nav-list {
+    margin-top: 20px;
+    height: 100%;
+  }
+  .sidebar li {
+    position: relative;
+    margin: 8px 0;
+    list-style: none;
+  }
+  .sidebar li .tooltip {
+    position: absolute;
+    top: -20px;
+    left: calc(100% + 15px);
+    z-index: 3;
+    background: #fff;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 15px;
+    font-weight: 400;
+    opacity: 0;
+    white-space: nowrap;
+    pointer-events: none;
+    transition: 0s;
+    color: #11101d;
+  }
+  .sidebar li:hover .tooltip {
+    opacity: 1;
+    pointer-events: auto;
+    transition: all 0.4s ease;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  .sidebar.open li .tooltip {
+    display: none;
+  }
+  .sidebar li .Link {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    border-radius: 12px;
+    align-items: center;
+    
+    text-decoration: none;
+    transition: all 0.4s ease;
+    background: #a2cbfa;
+  }
+  .sidebar li .Link.active {
+    background: #001365;
+    color: #11101d;
+  }
+  .sidebar li .Link:hover {
+    background: #fff;
+  }
+  .sidebar li:last-child .Link {
+    background-color: rgb(249, 66, 66);
+  }
+  
+  .sidebar li .Link .links_name {
+    color: #fff;
+    font-size: 15px;
+    font-weight: 400;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: 0.4s;
+  }
+  .sidebar.open li .Link .links_name {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .sidebar li .Link:hover .links_name,
+  .sidebar li .Link:hover i {
+    transition: all 0.5s ease;
+    color: #11101d;
+  }
+  .sidebar li i {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+    line-height: 50px;
+    font-size: 18px;
+    border-radius: 12px;
+  }
