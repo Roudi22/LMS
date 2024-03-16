@@ -25,9 +25,9 @@ const SideBarProfile = ({
   return (
     <div className="w-full">
       <div
-        className={`w-full flex items-center px-3 py-4 cursor-pointer ${
+        className={`hover:bg-slate-400 w-full flex items-center px-3 py-4 cursor-pointer ${
           active === 1 ? "dark:bg-slate-800 bg-white" : "bg-transparent"
-        }`}
+        } dark:text-white text-slate-800 hover:text-white transition`}
         onClick={() => setActive(1)}
       >
         <Image
@@ -37,7 +37,7 @@ const SideBarProfile = ({
         height={40}
         className="cursor-pointer rounded-full"
         />
-        <h5 className="pl-2 800px:block hidden font-Poppins dark:text-white text-black" >
+        <h5 className="pl-2 800px:block hidden font-Poppins" >
             My Account
         </h5>
       </div>
