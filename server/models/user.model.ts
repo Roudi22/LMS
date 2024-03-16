@@ -28,14 +28,14 @@ export interface IUser extends Document {
         email: {
             type: String,
             required: [true, "Please enter your email"],
-            unique: true,
+            unique: true, // unique email address for each user 
             match: [emailRegexPattern, "Please enter a valid email address"],
 
         },
         password: {
             type: String,
             minlength: [6, "Your password must be longer than 6 characters"],
-            select: false
+            select: false // hide password from user 
         },
         avatar: {
             public_id:String,
@@ -60,7 +60,7 @@ export interface IUser extends Document {
 
     // Hash password before saving user
     userSchema.pre<IUser>("save", async function(next) {
-        if (!this.isModified("password")) {
+        if (!this.isModified("password")) { // if password is not modified then call next middleware 
             next();
         }
         this.password = await bcrypt.hash(this.password, 10);
